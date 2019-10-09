@@ -1,0 +1,6 @@
+/node_modules
+/docs/*.html
+/docs/scripts
+/docs/styles
+/docs/img
+/.project

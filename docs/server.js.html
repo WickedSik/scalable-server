@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>scalable-server Source: server.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.united.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top ">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">scalable-server</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="APIClient.html">APIClient</a>
+						</li>
+						
+						<li>
+							<a href="APIServer.html">APIServer</a>
+						</li>
+						
+						<li>
+							<a href="Client.html">Client</a>
+						</li>
+						
+						<li>
+							<a href="Connection.html">Connection</a>
+						</li>
+						
+						<li>
+							<a href="ConnectionPool.html">ConnectionPool</a>
+						</li>
+						
+						<li>
+							<a href="Daemon.html">Daemon</a>
+						</li>
+						
+						<li>
+							<a href="HashCode.html">HashCode</a>
+						</li>
+						
+						<li>
+							<a href="Messages.html">Messages</a>
+						</li>
+						
+						<li>
+							<a href="Server.html">Server</a>
+						</li>
+						
+						<li>
+							<a href="Stack.html">Stack</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: server.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">var Daemon = require('./daemon.js'),
+    Client = require('./client.js'),
+    APIServer = require('./api-server.js'),
+    APIClient = require('./api-client.js'),
+    uuid = require('uuid'),
+    extend = require('extend'),
+    S = require('string');
+
+function log() {
+    var args = Array.prototype.slice.call(arguments);
+
+    if (args.length >= 2) {
+
+        var type = args.shift().toUpperCase();
+        var lm = args.shift();
+
+        lm = '=[%s]= ' + lm;
+
+        args.unshift(lm, S(type).pad(10).toString());
+
+    }
+
+    console.log.apply(null, args);
+}
+
+function getLocalIP() {
+    var os = require('os');
+    var ifaces = os.networkInterfaces();
+    var details, i, dev;
+
+    for (dev in ifaces) {
+        if (ifaces.hasOwnProperty(dev)) {
+            for (i = 0; i &lt; ifaces[dev].length; i++) {
+                details = ifaces[dev][i];
+
+                if (details.family === 'IPv4' &amp;&amp; details.internal === false) {
+                    return details.address;
+                }
+            }
+        }
+    }
+
+    return '127.0.0.1';
+}
+
+/**
+ * @class
+ * @constructor
+ */
+function Server(config) {
+    var self = this,
+        daemon; //,address_book = [];
+
+    this.config = extend({
+        api: {},
+        daemon: {}
+    }, config);
+    this.address = uuid.v4();
+
+    // set the address correctly
+    this.config.daemon.address = this.address;
+    this.config.api.address = this.address;
+
+    this.addressbook = {};
+
+    function initDaemon() {
+
+        daemon = new Daemon(self, self.config.daemon);
+
+        daemon.on('log', log);
+        daemon.on('error', log);
+        daemon.on('message', function (event) {
+            var message = event.message;
+
+            if (message.message) {
+                log('message', 'Received message "%j" from "%s"', message.message, message.__address);
+            } else {
+                log('event', 'Received event "%s" from "%s"', message.event, message.__address);
+            }
+        });
+        daemon.on('connection.new', function () {
+            console.info('new connection', arguments);
+        });
+        daemon.on('server.new', function (obj) {
+            console.info('new server', obj.host);
+
+            var host = obj.host.split(':');
+            var api = new APIClient(self, 'http://' + host[0] + ':' + (parseInt(host[1]) + 1));
+
+            api.get('/statistics', function (stats) {
+                console.info('Gained Statistics: ', stats);
+            });
+
+        });
+
+        daemon.init();
+
+        if (self.config.test) {
+
+            if (typeof (self.config.test) === 'number') {
+                var n = self.config.test,
+                    i, c = 1;
+
+                var f = function () {
+                    if (--n === 0) {
+                        clearInterval(i);
+                    }
+
+                    daemon.send({
+                        m: 'Testing message #' + (c++),
+                        t: Math.random()
+                    });
+                };
+
+                i = setInterval(f, 5000);
+            } else {
+                setTimeout(function () {
+                    daemon.send({
+                        m: 'Testing message',
+                        t: Math.random()
+                    });
+                }, 10000);
+            }
+        }
+
+    }
+
+    function initAPIServer() {
+        self.api = new APIServer(self, self.config.api);
+        self.api.init();
+    }
+
+    /**
+     * @function
+     * @returns {Object}
+     */
+    this.statistics = function () {
+        return {
+            address: {
+                name: self.address,
+                hostname: require('os').hostname(),
+                ip: getLocalIP()
+            },
+            daemon: {
+                clients: daemon.countClientConnections(),
+                servers: daemon.countServerConnections()
+            }
+        };
+    };
+
+    /**
+     * @function
+     */
+    this.init = function () {
+        initDaemon();
+        initAPIServer();
+    };
+
+    /**
+     * @function
+     * @returns {Daemon}
+     */
+    this.getDaemon = function () {
+        return daemon;
+    };
+
+    /**
+     * @function
+     * @param {String} event
+     * @param {Function} cb
+     */
+    this.on = function (event, cb) {
+        daemon.on(event, cb);
+    };
+
+    /**
+     * @function
+     */
+    this.log = log;
+}
+
+/** @member {Client} */
+Server.Client = Client;
+
+// exporting
+module.exports = Server;
+</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Scalable Server Copyright © 2010-2014 Jurriën Dokter
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+		on Mon Sep 16 2019 14:40:19 GMT+0200 (CEST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers: true,  showMenu: true, enableDoclinks: true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+			    anchorName  : function(i, heading, prefix) {
+					return $(heading).attr("id") || ( prefix + i );
+				},
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>

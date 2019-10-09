@@ -1,0 +1,38 @@
+{
+    "opts": {
+        "template": "./docs/templates/docstrap/",
+        "destination": "./docs/",
+        "recurse": true
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "include": ["./lib", "./README.md"],
+        "exclude": ["./node_modules"],
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "default": {
+            "outputSourceFiles": true
+        },
+        "systemName": "scalable-server",
+        "footer": "",
+        "copyright": "Scalable Server Copyright © 2010-2014 Jurriën Dokter",
+        "navType": "vertical",
+        "theme": "united",
+        "linenums": true,
+        "collapseSymbols": false,
+        "inverseNav": false
+    },
+    "plugins": [
+        "plugins/markdown"
+    ],
+    "markdown": {
+        "parser": "gfm",
+        "hardwrap": true
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "name": "scalable-server",
+    "version": "3.0.2",
+    "description": "Unlimited Scalable Server",
+    "main": "lib/daemon.js",
+    "dependencies": {
+        "@types/yargs": "^13.0.2",
+        "extend": "^3.0.2",
+        "md5": "^2.2.1",
+        "optimist": "^0.6.1",
+        "restify": "^8.4.0",
+        "restify-clients": "^2.6.7",
+        "string": "^3.3.3",
+        "uuid": "^3.3.3",
+        "websocket": "^1.0.30",
+        "ws": "^7.1.2",
+        "yargs": "^14.0.0"
+    },
+    "devDependencies": {
+        "@types/md5": "^2.1.33",
+        "@types/node": "^12.7.5",
+        "@types/string": "0.0.29",
+        "@types/uuid": "^3.4.5",
+        "@types/websocket": "0.0.40",
+        "@typescript-eslint/eslint-plugin": "^2.2.0",
+        "@typescript-eslint/parser": "^2.2.0",
+        "eslint": "^6.4.0",
+        "jsdoc": "^3.6.3",
+        "typescript": "^3.6.3"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "docs": "rm -f docs/*.html; jsdoc -c docs/conf.json"
+    },
+    "repository": "http://rd.jpd.es/jpdokter/scalable-server.git",
+    "keywords": [
+        "scalable",
+        "server"
+    ],
+    "author": "jpdokter",
+    "license": "GPL",
+    "readmeFilename": "README.md"
+}
