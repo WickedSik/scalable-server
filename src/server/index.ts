@@ -2,7 +2,7 @@ import { networkInterfaces, NetworkInterfaceInfo, hostname } from 'os'
 import { v4 } from 'uuid'
 import * as S from 'string'
 import { ScalableServer } from '../index.d'
-import Daemon from 'lib/Daemon'
+import Daemon from '../lib/Daemon'
 import { default as ApiServer } from '../api/Server'
 import { default as ApiClient } from '../api/Client'
 
@@ -53,16 +53,16 @@ export default class Server {
         this.api.init()
     }
 
-    log(format: string, ...elements: string[]): void {
-        if(elements.length >= 1) {
-            let [ type, first ] = elements
-            type = type.toUpperCase()
-            first = `=[${first}]=`
+    log(...elements: string[]): void {
+        // if(elements.length >= 2) {
+        //     let [ type, first ] = elements
+        //     type = type.toUpperCase()
+        //     first = `=[${first}]=`
 
-            elements.unshift(first, S(type).pad(10).toString())
-        }
+        //     elements.splice(0, 2).unshift(first, S(type).pad(10).toString())
+        // }
 
-        console.log(format, ...elements)
+        console.log(...elements)
     }
 
     on(event:string|symbol, callback: (...args:any[]) => void): void {

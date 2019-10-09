@@ -18,3 +18,19 @@ const argv = yargs.options({
     }
 }).argv
 
+const server:Server = new Server({
+    daemon: {
+        port: 9000,
+        clients: [],
+        servers: [],
+        noEvents: false
+    },
+    api: {
+        port: 9001
+    },
+    address: 'root',
+    noEvents: false,
+    dryRun: false
+})
+
+console.info('-- server started', server.localip)

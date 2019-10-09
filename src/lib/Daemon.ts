@@ -3,7 +3,7 @@ import Stack from './Stack'
 import { ScalableServer } from '../index.d'
 import { EventEmitter } from 'events'
 import Connection from './Connection'
-import { server as WebSocketServer, connection, client } from 'websocket'
+import { server as WebSocketServer, connection, client, IMessage, frame, request } from 'websocket'
 import * as http from 'http'
 import * as url from 'url'
 
@@ -78,13 +78,13 @@ export default class Daemon extends EventEmitter {
         this.pool.add(connection, address)
 
         socket.on('message', (event: MessageEvent) => {
-            this.emit('log', 'server', 'received : %s', event)
+            console.info('-- server', 'received : %s', event)
 
             // TODO: parse message
         })
 
         socket.on('close', (code: number, desc: string) => {
-            this.emit('log', 'server', 'closed: %s', desc)
+            console.info('-- server', 'closed: %s', desc)
 
             connection.remove()
 
@@ -92,7 +92,7 @@ export default class Daemon extends EventEmitter {
         })
 
         socket.on('error', (error: Error) => {
-            this.emit('log', 'server', 'error: %j', error)
+            console.info('-- server', 'error: %j', error)
 
             connection.remove()
 
@@ -107,13 +107,13 @@ export default class Daemon extends EventEmitter {
         this.servers.add(connection, address)
 
         socket.on('message', (event: MessageEvent) => {
-            this.emit('log', 'server', 'received : %s', event)
+            console.info('-- server', 'received : %s', event)
 
             // TODO: parse message
         })
 
         socket.on('close', (code: number, desc: string) => {
-            this.emit('log', 'server', 'closed: %s', desc)
+            console.info('-- server', 'closed: %s', desc)
 
             connection.remove()
 
@@ -121,7 +121,7 @@ export default class Daemon extends EventEmitter {
         })
 
         socket.on('error', (error: Error) => {
-            this.emit('log', 'server', 'error: %j', error)
+            console.info('-- server', 'error: %j', error)
 
             connection.remove()
 
@@ -136,26 +136,40 @@ export default class Daemon extends EventEmitter {
         web.listen(port)
 
         const server = new WebSocketServer({
-            httpServer: web,
-            autoAcceptConnections: true
+            httpServer: web
         })
 
-        server.on('request', (connection) => {
-            const requestedUrl = url.parse(connection.httpRequest.url as string, true)
+        server.on('request', (request:request) => {
+            console.info('-- server:connect', request.resourceURL)
 
-            this.emit('log', 'daemon', 'connected with %j', requestedUrl.href)
+            const requestedUrl = request.resourceURL as url.UrlWithParsedQuery
+
+            console.info('-- daemon', `connected with ${requestedUrl.href}`)
 
             const server = !!requestedUrl.query.server
             const address = (requestedUrl.pathname as string).substr(1)
 
-            this.emit('log', 'daemon', '[ws] %s: %s', server ? 'server' : 'client', address)
+            console.info('-- daemon', `[ws] ${server ? 'server' : 'client'}: ${address}`)
 
-            const socket = connection.accept()
+            const connection = request.accept()
+
+            connection.on('close', (code, desc) => {
+                console.info('-- server:close', code, desc)
+            })
+            connection.on('error', (e:Error) => {
+                console.info('-- server:error', e)
+            })
+            connection.on('message', (d:IMessage) => {
+                console.info('-- server:message', d.utf8Data)
+            })
+            connection.on('frame', (f:frame) => {
+                console.info('-- server:frame', f.toBuffer(true).toString())
+            })
 
             if(server) {
-                this.addServerConnection(socket, address)
+                this.addServerConnection(connection, address)
             } else {
-                this.addConnection(socket, address)
+                this.addConnection(connection, address)
             }
         })
     }
@@ -171,13 +185,13 @@ export default class Daemon extends EventEmitter {
             pathname: `/${this.address}`
         })
 
-        this.emit('log', 'Server', 'A server connection will be initiated to %s', address);
-        this.emit('log', 'Server', 'Its address will be : %s', remote_address);
+        console.info('-- Server', 'A server connection will be initiated to %s', address);
+        console.info('-- Server', 'Its address will be : %s', remote_address);
         
         const connection = new client()
 
         connection.on('connect', (connection:connection) => {
-            this.emit('log', 'Server', 'server connection has been made to %s', address);
+            console.info('-- Server', 'server connection has been made to %s', address);
 
             this.addServerConnection(connection, remote_address as string)
         })
