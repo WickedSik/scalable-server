@@ -1,4 +1,4 @@
-import md5 = require("md5")
+import md5 = require('md5')
 
 export default class HashCode {
     private static serialize(object: any): string {
@@ -6,10 +6,10 @@ export default class HashCode {
 
         let serializedCode = ''
 
-        switch(type) {
+        switch (type) {
             case 'object':
-                for(let element in object) {
-                    if(object.hasOwnProperty(element)) {
+                for (const element in object) {
+                    if (object.hasOwnProperty(element)) {
                         serializedCode += `[${type}:${element}${this.serialize(object[element])}]`
                     }
                 }

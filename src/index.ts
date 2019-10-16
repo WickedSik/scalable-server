@@ -1,12 +1,7 @@
-import Server from './server'
+import Server from './lib/socket/Server'
 import * as yargs from 'yargs'
 
 const argv = yargs.options({
-    api: {
-        alias: 'a',
-        describe: 'Port to bind the api on',
-        default: 8801
-    },
     port: {
         alias: 'p',
         describe: 'Port to bind on',
@@ -19,18 +14,18 @@ const argv = yargs.options({
 }).argv
 
 const server:Server = new Server({
-    daemon: {
-        port: 9000,
-        clients: [],
-        servers: [],
-        noEvents: false
-    },
-    api: {
-        port: 9001
-    },
-    address: 'root',
+    port: argv.port,
     noEvents: false,
     dryRun: false
 })
 
-console.info('-- server started', server.localip)
+console.info('-- server started: %s:%d', server.localip, argv.port)
+
+if(argv.client) {
+    argv.client.forEach((client:string) => {
+        const [host, port, address] = client.split(':')
+        
+        console.info('-- connecting to: %s:%d (%s)', host, port, address)
+        server.daemon.connectToServer(host, parseInt(port, 10), address)
+    })
+}    

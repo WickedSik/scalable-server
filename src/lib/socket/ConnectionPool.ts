@@ -7,8 +7,8 @@ export default class ConnectionPool {
         this.pool.set(address, connection)
     }
 
-    remove(address:string): void {
-        if(this.has(address)) {
+    remove(address: string): void {
+        if (this.has(address)) {
             this.pool.delete(address)
         }
     }
@@ -18,8 +18,8 @@ export default class ConnectionPool {
     }
 
     index(connection: Connection): string | undefined {
-        for(let [key, value] of this.pool.entries()) {
-            if(value === connection) {
+        for (const [key, value] of this.pool.entries()) {
+            if (value === connection) {
                 return key
             }
         }
@@ -27,12 +27,12 @@ export default class ConnectionPool {
     }
 
     send(message: any, except?: string): void {
-        if(typeof message !== 'string') {
+        if (typeof message !== 'string') {
             message = JSON.stringify(message)
         }
 
-        this.pool.forEach((connection:Connection, address) => {
-            if(address !== except) {
+        this.pool.forEach((connection: Connection, address) => {
+            if (address !== except) {
                 connection.send(message)
             }
         })

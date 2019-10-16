@@ -49,6 +49,10 @@
                     "Number": {
                         "message": "Use `number` instead",
                         "fixWith": "number"
+                    },
+                    "Boolean": {
+                        "message": "Use `boolean` instead",
+                        "fixWith": "boolean"
                     }
                 }
             }
@@ -111,6 +115,7 @@
         "@typescript-eslint/promise-function-async": [
             "error",
             {
+                "allowAny": true,
                 "allowedPromiseNames": [],
                 "checkArrowFunctions": true,
                 "checkFunctionDeclarations": true,
@@ -280,7 +285,7 @@
             "always",
             {
                 "arraysInObjects": false,
-                "objectsInObjects": true
+                "objectsInObjects": false
             }
         ],
         "@typescript-eslint/quotes": [
@@ -310,19 +315,14 @@
         ],
         "space-in-parens": [
             "error",
-            "always",
-            {
-                "exceptions": [
-                    "empty"
-                ]
-            }
+            "never"
         ],
         "space-infix-ops": "error",
         "space-unary-ops": [
             "error",
             {
                 "words": true,
-                "nonwords": false
+                "nonwords": true
             }
         ],
         "spaced-comment": [

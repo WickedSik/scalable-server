@@ -2,7 +2,7 @@ import ConnectionPool from './ConnectionPool'
 import { connection } from 'websocket'
 
 export default class Connection {
-    constructor(private socket: connection, private pool: ConnectionPool) {
+    constructor(private readonly socket: connection, private readonly pool: ConnectionPool) {
     }
 
     get address(): string | undefined {
