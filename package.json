@@ -32,8 +32,9 @@
         "typescript": "^3.6.3"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "docs": "rm -f docs/*.html; jsdoc -c docs/conf.json"
+        "lint": "eslint . --ext .ts",
+        "lint-fix": "eslint . --ext .ts --fix",
+        "docs": "typedoc --mode modules --includeDeclarations --excludeExternals --readme README.md --out ./docs ."
     },
     "repository": "http://rd.jpd.es/jpdokter/scalable-server.git",
     "keywords": [
