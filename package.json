@@ -4,7 +4,6 @@
     "description": "Unlimited Scalable Server",
     "main": "lib/daemon.js",
     "dependencies": {
-        "@types/yargs": "^13.0.2",
         "cross-fetch": "^3.0.4",
         "express": "^4.17.1",
         "extend": "^3.0.2",
@@ -25,6 +24,7 @@
         "@types/string": "0.0.29",
         "@types/uuid": "^3.4.5",
         "@types/websocket": "0.0.40",
+        "@types/yargs": "^13.0.2",
         "@typescript-eslint/eslint-plugin": "^2.2.0",
         "@typescript-eslint/parser": "^2.2.0",
         "eslint": "^6.4.0",
