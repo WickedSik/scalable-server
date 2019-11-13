@@ -1,5 +1,5 @@
 import { v1 } from 'uuid'
-import * as S from 'string'
+import S = require('string')
 import Connection from '../socket/Connection'
 import HashCode from '../common/HashCode'
 import { Message } from './Message'
@@ -30,13 +30,17 @@ export default class MessageFactory {
             address: []
         }
 
-        Object.keys(message).forEach((key:string) => {
-            if(key === 'address') {
-                m.address = m.address.concat(message.address)
-            } else {
-                m[key] = message[key]
-            }
-        })
+        if (typeof message === 'object') {
+            Object.keys(message).forEach((key: string) => {
+                if (key === 'address') {
+                    m.address = m.address.concat(message.address)
+                } else {
+                    m[key] = message[key]
+                }
+            })
+        } else {
+            m.message = message
+        }
 
         if (sender) {
             m.address.push(sender.address as string)

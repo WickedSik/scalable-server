@@ -1,17 +1,12 @@
-import * as express from 'express'
-import { Request, Response, NextFunction } from 'express'
-import MainServer from '../lib/socket/Server'
+import { Request, Response, NextFunction, Application } from 'express'
+import MainServer from '../socket/Server'
 
 type ApiRoute = {
     path: string
     callback: (request: Request, response: Response, next: NextFunction) => Response
 }
-
 export default class Server {
-    constructor(private readonly server: MainServer, protected customRoutes: ApiRoute[] = []) {
-    }
-
-    init(webServer: express.Application): void {
+    constructor(private readonly server: MainServer, webServer: Application, protected customRoutes: ApiRoute[] = []) {
         webServer.get('/statistics', (req, response) => {
             return response.json(this.server.statistics)
         })

@@ -6,10 +6,6 @@
         "browser": true,
         "node": true
     },
-    "globals": {
-        "THREE": "readonly",
-        "$": "readonly"
-    },
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",
@@ -19,7 +15,8 @@
         "ext": [
             ".ts"
         ],
-        "project": "./tsconfig.json"
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "./"
     },
     "extends": [
         "eslint:recommended",
@@ -40,7 +37,6 @@
             "error",
             {
                 "types": {
-                    "Array": null,
                     "Object": "Use `{}` instead",
                     "String": {
                         "message": "Use `string` instead",
@@ -128,18 +124,6 @@
             "error",
             {
                 "ignoreStatic": true
-            }
-        ],
-        "@typescript-eslint/typedef": [
-            "warn",
-            {
-                "arrowParameter": false,
-                "arrayDestructuring": false,
-                "memberVariableDeclaration": true,
-                "objectDestructuring": false,
-                "parameter": false,
-                "propertyDeclaration": true,
-                "variableDeclaration": true
             }
         ],
         "@typescript-eslint/type-annotation-spacing": [

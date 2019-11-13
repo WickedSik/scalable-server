@@ -1,4 +1,4 @@
-import Server from './lib/socket/Server'
+import Server from './socket/Server'
 import * as yargs from 'yargs'
 
 const argv = yargs.options({
@@ -13,19 +13,30 @@ const argv = yargs.options({
     }
 }).argv
 
-const server:Server = new Server({
+const server: Server = new Server({
     port: argv.port,
     noEvents: false,
     dryRun: false
 })
 
+// eslint-disable-next-line
 console.info('-- server started: %s:%d', server.localip, argv.port)
 
-if(argv.client) {
-    argv.client.forEach((client:string) => {
+if (argv.client) {
+    argv.client.forEach((client: string) => {
         const [host, port, address] = client.split(':')
-        
-        console.info('-- connecting to: %s:%d (%s)', host, port, address)
-        server.daemon.connectToServer(host, parseInt(port, 10), address)
+
+        // eslint-disable-next-line
+        console.info(
+            '-- connecting to: %s:%d (%s)', host, port, address
+        )
+        server.connect(host, parseInt(port, 10))
+            .then(serverconnection => {
+                // eslint-disable-next-line
+                console.info('-- connected', serverconnection)
+            }, failure => {
+                // eslint-disable-next-line
+                console.error('-- failed', failure)
+            })
     })
-}    
+}

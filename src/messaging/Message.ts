@@ -1,7 +1,5 @@
-import { AddressDetails } from "../../../types";
-
 type MessageType = {
-    [key: string]: any    
+    [key: string]: any
 }
 
 export type Message = MessageType & {

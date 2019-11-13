@@ -13,7 +13,7 @@ export default class Connection {
         this.socket.send(message)
     }
 
-    remove() {
+    remove(): void {
         this.pool.remove(this.address as string)
     }
 }

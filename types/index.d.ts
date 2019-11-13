@@ -11,11 +11,8 @@ export type ServerStatistics = {
         name: string
         hostname: string
         ip: string
-    },
-    daemon: {
-        clients: number
-        servers: number
     }
+    connections: number
 }
 
 export type AddressDetails = {
@@ -25,21 +22,23 @@ export type AddressDetails = {
 }
 
 export type AddressBook = {
-    [key:string]: AddressDetails
+    [key: string]: AddressDetails
 }
 
 /**
  * Message that is send between servers and clients
  */
-export declare class Message {
-    [key:string]: any
+export declare class Message { // eslint-disable-line
+    [key: string]: any
 }
 
 /* EVENTS */
 
 export declare class Event {
     origin: AddressDetails
+
     name: string
+
     payload?: any
 }
 
@@ -48,6 +47,7 @@ export declare class Event {
  */
 export declare class MessageEvent extends Event {
     name: 'message'
+
     payload: Message
 }
 

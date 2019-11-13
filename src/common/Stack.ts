@@ -55,11 +55,11 @@ export default class Stack<T extends HashedStack> {
         return this.elements[index] || undefined
     }
 
-    get length() {
+    get length(): number {
         return this.elements.length
     }
 
-    get capacity() {
+    get capacity(): number {
         return this.size
     }
 }
