@@ -52,7 +52,7 @@ export declare class MessageEvent extends Event {
 }
 
 export type NewConnectionEvent = {
-    connection: import('../src/lib/socket/Connection').default
+    connection: import('../src/socket/Connection').default
     address?: AddressDetails
     server: boolean
 }
