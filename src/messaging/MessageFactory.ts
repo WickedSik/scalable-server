@@ -1,5 +1,5 @@
 import { v1 } from 'uuid'
-import S = require('string')
+import he = require('he')
 import Connection from '../socket/Connection'
 import HashCode from '../common/HashCode'
 import { Message } from './Message'
@@ -73,10 +73,10 @@ export default class MessageFactory {
             return text
         }
 
-        return S(text)
-            .decodeHTMLEntities()
-            .collapseWhitespace()
-            .stripTags()
-            .toString()
+        return he.decode(text)
+        // collapse whitespace
+            .replace(/\s+/, ' ')
+        // strip tags
+            .replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi, '')
     }
 }
