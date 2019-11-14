@@ -11,7 +11,6 @@
         "optimist": "^0.6.1",
         "restify": "^8.4.0",
         "restify-clients": "^2.6.7",
-        "string": "^3.3.3",
         "uuid": "^3.3.3",
         "websocket": "^1.0.30",
         "ws": "^7.1.2",
