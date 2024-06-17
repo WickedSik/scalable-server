@@ -56,10 +56,15 @@ export default class Server extends EventEmitter {
     }
 
     get localip(): string {
-        const interfaces = networkInterfaces()
+        const nwInterfaces = networkInterfaces()
 
-        for (const key in interfaces) {
-            for (const device of interfaces[key]) {
+        for (const key in nwInterfaces) {
+            const nwInterface = nwInterfaces[key]
+            if(!nwInterface) {
+                continue
+            }
+
+            for (const device of nwInterface) {
                 if (device.family === 'IPv4' && device.internal === false) {
                     return device.address
                 }
