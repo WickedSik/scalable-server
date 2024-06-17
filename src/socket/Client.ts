@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
-import url = require('url')
+import * as url from 'url'
 import { Message } from '../../types'
-import Stack from 'common/Stack'
+import Stack from '../common/Stack'
 import ConnectionPool from './ConnectionPool'
 import {
     client as WebsocketClient,
