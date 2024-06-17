@@ -246,7 +246,7 @@
         "max-len": [
             "error",
             {
-                "code": 140,
+                "code": 200,
                 "ignoreComments": true,
                 "ignoreTrailingComments": false,
                 "ignoreUrls": true

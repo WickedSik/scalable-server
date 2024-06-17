@@ -16,7 +16,13 @@ const argv = yargs.options({
 const server: Server = new Server({
     port: argv.port,
     noEvents: false,
-    dryRun: false
+    dryRun: false,
+    on: {
+        log: (...args): void => {
+            // eslint-disable-next-line
+            console.log('[SERVER]', ...args)
+        }
+    }
 })
 
 // eslint-disable-next-line
@@ -27,9 +33,7 @@ if (argv.client) {
         const [host, port, address] = client.split(':')
 
         // eslint-disable-next-line
-        console.info(
-            '-- connecting to: %s:%d (%s)', host, port, address
-        )
+        console.info('-- connecting to: %s:%d (%s)', host, port, address)
         server.connect(host, parseInt(port, 10))
             .then(serverconnection => {
                 // eslint-disable-next-line

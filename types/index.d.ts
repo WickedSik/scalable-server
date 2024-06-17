@@ -4,6 +4,9 @@ export type Configuration = {
     noEvents: boolean
     port: number
     dryRun: boolean
+    on?: {
+        [key: string]: () => void
+    }
 }
 
 export type ServerStatistics = {
