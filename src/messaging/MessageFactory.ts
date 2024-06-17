@@ -1,5 +1,5 @@
 import { v1 } from 'uuid'
-import he = require('he')
+import * as he from 'he'
 import Connection from '../socket/Connection'
 import HashCode from '../common/HashCode'
 import { Message } from './Message'

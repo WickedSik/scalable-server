@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events'
 import { networkInterfaces, hostname } from 'os'
 import { v4 } from 'uuid'
-import express = require('express')
-import http = require('http')
-import url = require('url')
+import * as express from 'express'
+import * as http from 'http'
+import * as url from 'url'
 import ConnectionPool from './ConnectionPool'
-import Stack from 'common/Stack'
+import Stack from '../common/Stack'
 import { Message, Configuration, AddressBook, ServerStatistics } from '../../types'
 import { default as ApiServer } from '../api/Server'
 import {
