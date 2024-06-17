@@ -10,11 +10,11 @@
         "he": "^1.2.0",
         "md5": "^2.2.1",
         "optimist": "^0.5.2",
-        "restify": "^8.4.0",
-        "restify-clients": "^2.6.7",
+        "restify": "^11.1.0",
+        "restify-clients": "^4.2.0",
         "uuid": "^3.3.3",
         "websocket": "^1.0.30",
-        "ws": "^7.1.2",
+        "ws": "^8.17.1",
         "yargs": "^14.2.0"
     },
     "devDependencies": {
@@ -25,12 +25,13 @@
         "@types/string": "0.0.29",
         "@types/uuid": "^3.4.5",
         "@types/websocket": "0.0.40",
+        "@types/ws": "^8.5.10",
         "@types/yargs": "^13.0.3",
         "@typescript-eslint/eslint-plugin": "^2.4.1-alpha.4",
         "@typescript-eslint/parser": "^2.4.1-alpha.4",
         "eslint": "^6.5.1",
         "jsdoc": "^4.0.3",
-        "typescript": "^3.6.4"
+        "typescript": "^5.4.5"
     },
     "scripts": {
         "lint": "eslint . --ext .ts",

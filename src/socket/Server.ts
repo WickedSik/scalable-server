@@ -13,6 +13,7 @@ import {
     connection as WebsocketConnection,
     IMessage
 } from 'websocket'
+import { WebSocketServer } from 'ws'
 import ServerConnection from './ServerConnection'
 
 export default class Server extends EventEmitter {
@@ -23,6 +24,8 @@ export default class Server extends EventEmitter {
     protected readonly addressBook: AddressBook = {}
 
     protected api: ApiServer
+    
+    protected ws: WebSocketServer
 
     protected address: string
 
@@ -40,7 +43,13 @@ export default class Server extends EventEmitter {
 
         this.address = v4()
         this.api = new ApiServer(this, app, [])
-
+        this.ws = new WebSocketServer({ server: webserver })
+        this.ws.on('connection', (ws) => {
+            ws.on('message', this.handleMessage)
+            ws.on('close', this.handleClose)
+            ws.on('error', this.handleError)
+        })
+        
         webserver.listen(config.port)
 
         this.emit('log', `API hosted on ${config.port}`)
