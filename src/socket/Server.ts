@@ -29,6 +29,12 @@ export default class Server extends EventEmitter {
     constructor(private readonly config: Configuration) {
         super()
 
+        if (config.on) {
+            for (const key in config.on) {
+                this.on(key, config.on[key])
+            }
+        }
+
         const app = express()
         const webserver = http.createServer(app)
 
@@ -36,6 +42,8 @@ export default class Server extends EventEmitter {
         this.api = new ApiServer(this, app, [])
 
         webserver.listen(config.port)
+
+        this.emit('log', `API hosted on ${config.port}`)
     }
 
     get localip(): string {
@@ -94,7 +102,7 @@ export default class Server extends EventEmitter {
             connection.on('connect', (conn: WebsocketConnection) => {
                 this.emit('log', 'server.connected', conn)
 
-                const socket = new ServerConnection(conn, this.pool, `${hostname}:${port}`)
+                const socket = new ServerConnection(conn, this.pool, `${host}:${port}`)
 
                 conn.on('message', (data) => this.handleMessage(data))
                 conn.on('close', (code, number) => this.handleClose(code, number))
